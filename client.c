@@ -16,7 +16,7 @@ typedef struct{
 } Coordinate; 
 
 
-void main(int argc, int **argv){
+int main(int argc, char **argv){
     if(argc < 3){
 
     }
