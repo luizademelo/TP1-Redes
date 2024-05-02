@@ -1,6 +1,7 @@
-build: 
-	gcc server.c -lm -o server
-	gcc client.c -o client
+all: 
+	gcc -Wall -c common.c
+	gcc -Wall server.c common.o -lm -o server
+	gcc -Wall client.c common.o -lm -o client
 
 clean: 
 	rm client 
