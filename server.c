@@ -6,8 +6,9 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <unistd.h>
 
-Coordinate coordServ = {-19.9227,-43.9451};
+Coordinate coordServ = {0, 0};
 
 void usage(int argc, char **argv)
 {
@@ -109,18 +110,23 @@ int main(int argc, char **argv)
             continue;
         }
 
-        strcpy(buf, DRIVER_FOUND); 
-        send(csock, buf, strlen(buf)+1, 0); 
+        strcpy(buf, DRIVER_FOUND);
+        send(csock, buf, strlen(buf) + 1, 0);
 
         // recebendo as coordenadas do cliente
-        Coordinate coordCli; 
-        recv(csock, &coordCli, sizeof(coordCli), 0); 
+        Coordinate coordCli;
+        recv(csock, &coordCli, sizeof(coordCli), 0);
 
-        double dist = calculateDistance(coordServ, coordCli); 
+        double dist = calculateDistance(coordServ, coordCli);
 
+        while (dist > 0)
+        {
+            send(csock, &dist, sizeof(dist), 0); 
+            dist -= 400; 
+            usleep(2000*1000); 
+        }
 
-
-        printf("accepted ride %lf\n", dist); 
+        printf("accepted ride %lf\n", dist);
 
         close(csock);
     }
