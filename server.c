@@ -15,6 +15,21 @@ typedef struct{
     double longitude; 
 } Coordinate; 
 
+void printServerWaiting(){
+    printf("----------------------------------------------\n");
+    printf("| $ Aguardando solicitação.                  |\n");
+    printf("| $                                          |\n");
+    printf("----------------------------------------------\n");
+}
+
+void printAvailableRide(){
+    printf("----------------------------------------------\n");
+    printf("| $ Corrida disponível:                      |\n");
+    printf("| $ 0 - Recusar                              |\n");
+    printf("| $ 1 - Aceitar                              |\n");
+    printf("| $                                          |\n");
+    printf("----------------------------------------------\n");  
+}
 
 int main(int argc, char **argv){
     if(argc < 3){
@@ -46,6 +61,7 @@ int main(int argc, char **argv){
         logexit("listen"); 
     }
 
+    printServerWaiting(); 
 
     while(1){
 
@@ -64,7 +80,7 @@ int main(int argc, char **argv){
         char buf[BUFSZ]; 
         size_t count = recv(csock, buf, BUFSZ, 0); 
 
-        sprintf(buf, "remote endpoint: %s\n", caddrstr); 
+        sprintf(buf, "coordenadas: %s\n", caddrstr); 
         send(csock, buf, strlen(buf)+1, 0); 
         close(csock); 
 
