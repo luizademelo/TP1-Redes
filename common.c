@@ -93,13 +93,13 @@ int server_sockaddr_init(const char *proto, const char *portstr, struct sockaddr
 
     memset(storage, 0, sizeof(storage)); 
 
-    if(0 == strcmp(proto, "v4")){
+    if(0 == strcmp(proto, "ipv4")){
         struct sockaddr_in *addr4 = (struct sockaddr_in *)storage;
         addr4->sin_family = AF_INET;
         addr4->sin_port = port;
         addr4->sin_addr.s_addr = INADDR_ANY;
         return 0;
-    }else if(0 == strcmp(proto, "v6")){
+    }else if(0 == strcmp(proto, "ipv6")){
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)storage;
         addr6->sin6_family = AF_INET6;
         addr6->sin6_port = port;
