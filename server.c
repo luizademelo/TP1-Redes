@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-Coordinate coordServ = {0, 0};
+Coordinate coordServ = {40.7128, 74.0060};
 
 void usage(int argc, char **argv)
 {
@@ -65,6 +65,11 @@ int main(int argc, char **argv)
     if (server_socket == -1)
     {
         logexit("socket");
+    }
+
+    int enable = 1; 
+    if(0 != setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int))){
+        logexit("setsockopt"); 
     }
 
     struct sockaddr *addr = (struct sockaddr *)(&storage);
@@ -126,7 +131,7 @@ int main(int argc, char **argv)
             usleep(2000*1000); 
         }
 
-        printf("accepted ride %lf\n", dist);
+        printf("O motorista chegou.\n");
 
         close(csock);
     }

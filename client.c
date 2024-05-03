@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include "common.h"
 
-Coordinate coordCli = {200, 200};
+Coordinate coordCli = {40.7317, 74.0600};
 
 
 void usage(int argc, char **argv)
@@ -61,18 +61,19 @@ int main(int argc, char **argv)
 
     struct sockaddr *addr = (struct sockaddr *)(&storage);
 
-    printClientInitialMenu();
-    int option = getClientInitialMenuOption();
-
-    if (option == EXIT)
-    {
-        close(client_socket);
-        exit(EXIT_SUCCESS);
-    }
 
 
     while (1)
     {
+        printClientInitialMenu();
+        int option = getClientInitialMenuOption();
+
+        if (option == EXIT)
+        {
+            close(client_socket);
+            exit(EXIT_SUCCESS);
+        }
+
         if (0 != connect(client_socket, addr, sizeof(storage)))
         {
             logexit("connect");

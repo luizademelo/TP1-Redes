@@ -14,24 +14,17 @@ void logexit(const char *msg)
 }
 double calculateDistance(Coordinate coord1, Coordinate coord2)
 {
-    // distance between latitudes
-    // and longitudes
-    double dLat = (coord2.latitude - coord1.latitude) *
-                  M_PI / 180.0;
-    double dLon = (coord2.longitude - coord1.longitude) *
-                  M_PI / 180.0;
-
-    // convert to radians
-    coord1.latitude = (coord1.latitude)*M_PI / 180.0;
-    coord2.latitude = (coord2.latitude)*M_PI / 180.0;
-
-    // apply formulae
-    double a = pow(sin(dLat / 2), 2) +
-               pow(sin(dLon / 2), 2) *
-                   cos(coord1.latitude) * cos(coord2.latitude);
+    double dLat = (coord2.latitude - coord1.latitude) * M_PI / 180.0;
+    double dLon = (coord2.longitude - coord1.longitude) * M_PI / 180.0;
+    
+    double lat1 = (coord1.latitude) * M_PI / 180.0;
+    double lat2 = (coord2.latitude) * M_PI / 180.0;
+    
+    double dist = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
     double rad = 6371;
-    double c = 2 * asin(sqrt(a));
-    return rad * c;
+    double c = 2 * asin(sqrt(dist));
+    
+    return rad * c * 1000.0;
 }
 
 int addrparse(const char *addrstr, const char *portstr, struct sockaddr_storage *storage)
