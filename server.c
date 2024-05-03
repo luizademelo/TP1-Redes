@@ -7,6 +7,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+Coordinate coordServ = {-19.9227,-43.9451};
+
 void usage(int argc, char **argv)
 {
     printf("usage: %s <ipv4|ipv6> <server port>\n", argv[0]);
@@ -106,6 +108,17 @@ int main(int argc, char **argv)
             close(csock);
             continue;
         }
+
+        strcpy(buf, DRIVER_FOUND); 
+        send(csock, buf, strlen(buf)+1, 0); 
+
+        // recebendo as coordenadas do cliente
+        Coordinate coordCli; 
+        recv(csock, &coordCli, sizeof(coordCli), 0); 
+
+        double dist = calculateDistance(coordServ, coordCli); 
+
+        
 
         printf("accepted ride\n"); 
 

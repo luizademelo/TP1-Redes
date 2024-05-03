@@ -1,14 +1,37 @@
+#include "common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <string.h>
 
-void logexit(const char *msg){
-    perror(msg); 
-    exit(EXIT_FAILURE); 
-}
 
+void logexit(const char *msg)
+{
+    perror(msg);
+    exit(EXIT_FAILURE);
+}
+double calculateDistance(Coordinate coord1, Coordinate coord2)
+{
+    // distance between latitudes
+    // and longitudes
+    double dLat = (coord2.latitude - coord1.latitude) *
+                  M_PI / 180.0;
+    double dLon = (coord2.longitude - coord1.longitude) *
+                  M_PI / 180.0;
+
+    // convert to radians
+    coord1.latitude = (coord1.latitude)*M_PI / 180.0;
+    coord2.latitude = (coord2.latitude)*M_PI / 180.0;
+
+    // apply formulae
+    double a = pow(sin(dLat / 2), 2) +
+               pow(sin(dLon / 2), 2) *
+                   cos(coord1.latitude) * cos(coord2.latitude);
+    double rad = 6371;
+    double c = 2 * asin(sqrt(a));
+    return rad * c;
+}
 
 int addrparse(const char *addrstr, const char *portstr, struct sockaddr_storage *storage)
 {
@@ -91,21 +114,26 @@ int server_sockaddr_init(const char *proto, const char *portstr, struct sockaddr
 
     port = htons(port); // host tp network short
 
-    memset(storage, 0, sizeof(storage)); 
+    memset(storage, 0, sizeof(storage));
 
-    if(0 == strcmp(proto, "ipv4")){
+    if (0 == strcmp(proto, "ipv4"))
+    {
         struct sockaddr_in *addr4 = (struct sockaddr_in *)storage;
         addr4->sin_family = AF_INET;
         addr4->sin_port = port;
         addr4->sin_addr.s_addr = INADDR_ANY;
         return 0;
-    }else if(0 == strcmp(proto, "ipv6")){
+    }
+    else if (0 == strcmp(proto, "ipv6"))
+    {
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)storage;
         addr6->sin6_family = AF_INET6;
         addr6->sin6_port = port;
-        addr6->sin6_addr = in6addr_any; 
+        addr6->sin6_addr = in6addr_any;
         return 0;
-    }else{
-        return -1; 
+    }
+    else
+    {
+        return -1;
     }
 }

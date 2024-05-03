@@ -7,6 +7,9 @@
 #include <netinet/in.h>
 #include "common.h"
 
+Coordinate coordCli = {-1.9227,-90.9451};
+
+
 void usage(int argc, char **argv)
 {
     printf("usage: %s <server IP> <server port>\n", argv[0]);
@@ -95,7 +98,7 @@ int main(int argc, char **argv)
         if (count <= 0)
         {
             // connection terminated
-            printf("conexao terminada");
+            printf("conexao terminada\n");
             break;
         }
 
@@ -120,6 +123,12 @@ int main(int argc, char **argv)
             //     logexit("send");
             // }
         }
+
+        // Driver found
+
+        send(client_socket, &coordCli, sizeof(coordCli), 0); 
+
+        
 
         printf("accepted ride client\n"); 
     }
