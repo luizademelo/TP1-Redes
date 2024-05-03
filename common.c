@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <math.h>
 
 
 void logexit(const char *msg)

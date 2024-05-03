@@ -118,9 +118,9 @@ int main(int argc, char **argv)
 
         double dist = calculateDistance(coordServ, coordCli); 
 
-        
 
-        printf("accepted ride\n"); 
+
+        printf("accepted ride %lf\n", dist); 
 
         close(csock);
     }
