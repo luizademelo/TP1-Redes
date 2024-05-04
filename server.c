@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-Coordinate coordServ = {40.7128, 74.0060};
+Coordinate coordServ = {-19.9227,-43.9451};
 
 void usage(int argc, char **argv)
 {

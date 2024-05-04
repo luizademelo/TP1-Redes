@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include "common.h"
 
-Coordinate coordCli = {40.7317, 74.0600};
+Coordinate coordCli = {-19.9391, -43.9398};
 
 
 void usage(int argc, char **argv)
@@ -136,6 +136,7 @@ int main(int argc, char **argv)
 
 
         printf("O motorista chegou.\n"); 
+        break; 
     }
 
     close(client_socket);

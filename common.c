@@ -24,7 +24,7 @@ double calculateDistance(Coordinate coord1, Coordinate coord2)
     double rad = 6371;
     double c = 2 * asin(sqrt(dist));
     
-    return rad * c * 1000.0;
+    return rad * c * 1000;
 }
 
 int addrparse(const char *addrstr, const char *portstr, struct sockaddr_storage *storage)
