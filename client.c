@@ -29,8 +29,6 @@ void printDriverNotFoundMenu()
 {
     printf("----------------------------------------------\n");
     printf("| $ Nao foi encontrado um motorista\n");
-    printf("| $ 0 - Sair\n");
-    printf("| $ 1 - Solicitar corrida\n");
     printf("----------------------------------------------\n");
 }
 
@@ -53,18 +51,23 @@ int main(int argc, char **argv)
     {
     }
 
-    int client_socket = socket(storage.ss_family, SOCK_STREAM, 0);
-    if (client_socket == -1)
-    {
-        logexit("socket");
-    }
-
-    struct sockaddr *addr = (struct sockaddr *)(&storage);
 
 
 
     while (1)
     {
+        int client_socket = socket(storage.ss_family, SOCK_STREAM, 0);
+        if (client_socket == -1)
+        {
+            logexit("socket");
+        }
+
+        struct sockaddr *addr = (struct sockaddr *)(&storage);
+        if (0 != connect(client_socket, addr, sizeof(storage)))
+        {
+            logexit("connect");
+        }
+
         printClientInitialMenu();
         int option = getClientInitialMenuOption();
 
@@ -74,10 +77,6 @@ int main(int argc, char **argv)
             exit(EXIT_SUCCESS);
         }
 
-        if (0 != connect(client_socket, addr, sizeof(storage)))
-        {
-            logexit("connect");
-        }
 
         char addrstr[BUFSZ];
         char buf[BUFSZ];
@@ -99,30 +98,14 @@ int main(int argc, char **argv)
         if (count <= 0)
         {
             // connection terminated
-            printf("conexao terminada\n");
-            break;
+            logexit("recv"); 
         }
 
         if (strcmp(buf, DRIVER_NOT_FOUND) == 0)
         {
             printDriverNotFoundMenu();
-            int option = getClientInitialMenuOption();
-            if (option == EXIT)
-            {
-                close(client_socket);
-                exit(EXIT_SUCCESS);
-            }
-
-            // if (0 != connect(client_socket, addr, sizeof(storage)))
-            // {
-            //     logexit("connect");
-            // }
-
-            // int count = send(client_socket, buf, strlen(buf) + 1, 0);
-            // if (count != strlen(buf) + 1)
-            // {
-            //     logexit("send");
-            // }
+            close(client_socket); 
+            continue; 
         }
 
         // Driver found
@@ -137,8 +120,8 @@ int main(int argc, char **argv)
 
         printf("O motorista chegou.\n"); 
         break; 
+        close(client_socket);
     }
 
-    close(client_socket);
     exit(EXIT_SUCCESS);
 }
