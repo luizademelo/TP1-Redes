@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-Coordinate coordServ = {-19.9227,-43.9451};
+Coordinate coordServ = {-19.9227, -43.9451};
 
 void usage(int argc, char **argv)
 {
@@ -67,9 +67,10 @@ int main(int argc, char **argv)
         logexit("socket");
     }
 
-    int enable = 1; 
-    if(0 != setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int))){
-        logexit("setsockopt"); 
+    int enable = 1;
+    if (0 != setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)))
+    {
+        logexit("setsockopt");
     }
 
     struct sockaddr *addr = (struct sockaddr *)(&storage);
@@ -84,10 +85,10 @@ int main(int argc, char **argv)
         logexit("listen");
     }
 
+    printServerWaiting();
+
     while (1)
     {
-
-        printServerWaiting();
 
         char buf[BUFSZ];
         struct sockaddr_storage cstorage;
@@ -105,35 +106,39 @@ int main(int argc, char **argv)
 
         size_t count = recv(csock, buf, BUFSZ, 0);
 
-        printAvailableRide();
-
-        if (getAcceptRideOption(buf, csock) == REJECTED)
+        if (strcmp(buf, REQUEST_RIDE) == 0)
         {
-            strcpy(buf, DRIVER_NOT_FOUND);
+            printAvailableRide();
+
+            if (getAcceptRideOption(buf, csock) == REJECTED)
+            {
+                strcpy(buf, DRIVER_NOT_FOUND);
+                send(csock, buf, strlen(buf) + 1, 0);
+                close(csock);
+                printServerWaiting(); 
+                continue;
+            }
+
+            strcpy(buf, DRIVER_FOUND);
             send(csock, buf, strlen(buf) + 1, 0);
+
+            // recebendo as coordenadas do cliente
+            Coordinate coordCli;
+            recv(csock, &coordCli, sizeof(coordCli), 0);
+
+            double dist = calculateDistance(coordServ, coordCli);
+
+            while (dist > 0)
+            {
+                send(csock, &dist, sizeof(dist), 0);
+                dist -= 400;
+                usleep(2000 * 1000);
+            }
+
+            printf("O motorista chegou.\n");
+            printServerWaiting(); 
             close(csock);
-            continue;
         }
-
-        strcpy(buf, DRIVER_FOUND);
-        send(csock, buf, strlen(buf) + 1, 0);
-
-        // recebendo as coordenadas do cliente
-        Coordinate coordCli;
-        recv(csock, &coordCli, sizeof(coordCli), 0);
-
-        double dist = calculateDistance(coordServ, coordCli);
-
-        while (dist > 0)
-        {
-            send(csock, &dist, sizeof(dist), 0); 
-            dist -= 400; 
-            usleep(2000*1000); 
-        }
-
-        printf("O motorista chegou.\n");
-
-        close(csock);
     }
 
     close(server_socket);
