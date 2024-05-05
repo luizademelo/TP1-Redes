@@ -59,6 +59,7 @@ int main(int argc, char **argv)
 
     if (0 != server_sockaddr_init(argv[1], argv[2], &storage))
     {
+        logexit("server_sockaddr_init"); 
     }
 
     int server_socket = socket(storage.ss_family, SOCK_STREAM, 0);

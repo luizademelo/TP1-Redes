@@ -43,12 +43,14 @@ int main(int argc, char **argv)
 {
     if (argc < 3)
     {
+        usage(argc, argv); 
     }
 
     struct sockaddr_storage storage;
 
     if (0 != addrparse(argv[2], argv[3], &storage))
     {
+        logexit("addrparse"); 
     }
 
 
